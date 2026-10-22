@@ -1,0 +1,61 @@
+---
+import '../styles/global.css';
+import Reveal from '../components/Reveal.astro';
+import { site } from '../data/site';
+import headingFont from '@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url';
+import bodyFont from '@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2?url';
+import italicFont from '@fontsource-variable/fraunces/files/fraunces-latin-wght-italic.woff2?url';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = site.description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es-MX">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#ffffff" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content="es_MX" />
+    <link rel="icon" type="image/svg+xml" href="/logo-corinne.svg" />
+    <link rel="preconnect" href="https://ik.imagekit.io" />
+    <link
+      rel="preload"
+      href={headingFont}
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href={bodyFont}
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href={italicFont}
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <title>{title}</title>
+  </head>
+
+  <body>
+    <a href="#contenido" class="skip-link">
+      Saltar al contenido
+    </a>
+    <slot />
+    <Reveal />
+  </body>
+</html>

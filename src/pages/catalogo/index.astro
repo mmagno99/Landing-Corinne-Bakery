@@ -1,0 +1,75 @@
+---
+import { IconArrowUpRight } from '@tabler/icons-react';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { categories, visibleProducts } from '../../data/products';
+const visibleCategories = categories.filter((category) =>
+  visibleProducts.some((product) => product.category === category.id),
+);
+---
+
+<BaseLayout title="Catálogo | Corinne">
+  <Navbar />
+  <main id="contenido" class="catalog-page site-shell">
+    <header id="inicio" class="page-intro">
+      <a href="/" class="text-link">
+        ← Volver al inicio
+      </a>
+      <p class="eyebrow">Algo rico para cada momento</p>
+      <h1>
+        Elige tu próximo
+        <br />
+        <span class="heading-italic">antojo.</span>
+      </h1>
+      <p class="section-description">
+        Pasteles, pequeños detalles y sabores de temporada. Una primera mirada
+        al mundo de Corinne.
+      </p>
+      <p class="sample-note">
+        Catálogo de ejemplo. Fotografías ilustrativas, precios y disponibilidad
+        por confirmar.
+      </p>
+    </header>
+    <nav class="catalog-categories" aria-label="Categorías del catálogo">
+      {visibleCategories.map((category) => (
+        <a href={`#${category.id}`}>
+          {category.name}
+          <IconArrowUpRight size={18} stroke={1.5} aria-hidden="true" />
+        </a>
+      ))}
+    </nav>
+    <section
+      class="catalog-selection"
+      aria-labelledby="catalog-selection-heading"
+    >
+      <h2 id="catalog-selection-heading" class="sr-only">
+        Selección de productos
+      </h2>
+      <div class="products-grid">
+        {visibleProducts.map((product, index) => (
+          <ProductCard
+            product={product}
+            index={index % 3}
+            id={
+              visibleProducts.findIndex(
+                (item) => item.category === product.category,
+              ) === index
+                ? product.category
+                : undefined
+            }
+          />
+        ))}
+      </div>
+    </section>
+    <aside class="catalog-invitation">
+      <h2>¿Tienes algo en mente?</h2>
+      <a href="/#personalizados" class="button">
+        Imagina tu pastel{' '}
+        <IconArrowUpRight size={18} stroke={1.5} aria-hidden="true" />
+      </a>
+    </aside>
+  </main>
+  <Footer />
+</BaseLayout>

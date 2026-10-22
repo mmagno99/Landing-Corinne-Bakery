@@ -1,0 +1,75 @@
+---
+import { IconArrowUpRight } from '@tabler/icons-react';
+import { navigation, site } from '../data/site';
+---
+
+<header class="site-header">
+  <nav class="floating-nav" aria-label="Navegación principal">
+    <a href="/" class="brand-link" aria-label="Corinne, inicio">
+      <img
+        src={site.logo}
+        width="52"
+        height="52"
+        alt="Corinne"
+        fetchpriority="high"
+      />
+    </a>
+    <div class="desktop-links">
+      {navigation.map((link) => (
+        <a href={link.href}>{link.label}</a>
+      ))}
+    </div>
+    <a class="button button-small nav-cta" href="/catalogo/">
+      Ver catálogo{' '}
+      <IconArrowUpRight size={18} stroke={1.5} aria-hidden="true" />
+    </a>
+    <details class="mobile-menu">
+      <summary aria-label="Menú de navegación">
+        <span class="menu-label">Menú</span>
+        <span class="menu-lines" aria-hidden="true">
+          <span></span>
+          <span></span>
+        </span>
+      </summary>
+      <div class="mobile-links">
+        {navigation.map((link) => (
+          <a href={link.href}>
+            {link.label}
+            <IconArrowUpRight size={18} stroke={1.5} aria-hidden="true" />
+          </a>
+        ))}
+        <a href="/catalogo/">
+          Ver catálogo
+          <IconArrowUpRight size={18} stroke={1.5} aria-hidden="true" />
+        </a>
+      </div>
+    </details>
+  </nav>
+</header>
+<script>
+  const menu = document.querySelector<HTMLDetailsElement>('.mobile-menu');
+  const menuTrigger = menu?.querySelector('summary');
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && menu?.open) {
+      menu.open = false;
+      menuTrigger?.focus();
+    }
+  });
+  menu?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      menu.open = false;
+    });
+  });
+  document.addEventListener('click', (event) => {
+    if (
+      menu?.open &&
+      event.target instanceof Node &&
+      !menu.contains(event.target)
+    )
+      menu.open = false;
+  });
+  const desktop = window.matchMedia('(min-width: 1024px)');
+  desktop.addEventListener('change', () => {
+    if (menu) menu.open = false;
+  });
+</script>

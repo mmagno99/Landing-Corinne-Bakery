@@ -1,0 +1,50 @@
+---
+import { IconArrowUpRight } from '@tabler/icons-react';
+import { Image } from 'astro:assets';
+import type { Product } from '../types/content';
+interface Props {
+  product: Product;
+  index?: number;
+  id?: string;
+}
+const { product, index = 0, id } = Astro.props;
+const price =
+  product.price === null
+    ? 'Precio por confirmar'
+    : new Intl.NumberFormat('es-MX', {
+        style: 'currency',
+        currency: 'MXN',
+      }).format(product.price);
+---
+
+<article
+  id={id}
+  class="product-card"
+  data-reveal
+  style={`--reveal-delay: ${index * 65}ms`}
+>
+  <a href={`/catalogo/${product.slug}/`} class="product-link">
+    <div class="product-image image-frame">
+      <Image
+        src={product.image}
+        alt={product.imageAlt}
+        widths={[360, 540, 680, 860]}
+        sizes="(min-width: 1024px) 31vw, (min-width: 640px) 45vw, 90vw"
+        width={600}
+        height={800}
+        fit="cover"
+        format="webp"
+        quality={78}
+        loading="lazy"
+      />
+    </div>
+    <div class="product-heading">
+      <h3>{product.name}</h3>
+      <span class="product-arrow" aria-hidden="true">
+        <IconArrowUpRight size={18} stroke={1.5} />
+      </span>
+    </div>
+    <p class="product-description">{product.description}</p>
+    <p class="product-price">{price}</p>
+  </a>
+</article>

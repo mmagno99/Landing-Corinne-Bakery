@@ -1,0 +1,263 @@
+---
+import { IconArrowUpRight } from '@tabler/icons-react';
+import { Image, getImage } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import ProductCard from '../components/ProductCard.astro';
+import CakeConfigurator from '../components/CakeConfigurator';
+import {
+  categories,
+  seasonalCampaign,
+  visibleProducts,
+} from '../data/products';
+import { whatsappHref } from '../data/site';
+import hero from '../assets/photography/hero-cake.webp';
+import hands from '../assets/photography/artisan-hands.webp';
+import brownies from '../assets/photography/brownies.webp';
+
+const widths = [480, 800, 1100];
+const cakeImages = await Promise.all(
+  widths.map((width) =>
+    getImage({ src: hero, width, format: 'webp', quality: 82 }),
+  ),
+);
+const cakeSrcSet = cakeImages
+  .map((image, index) => `${image.src} ${widths[index]}w`)
+  .join(', ');
+const favorites = visibleProducts.filter((product) => product.featured);
+---
+
+<BaseLayout title="Corinne | Lo bonito de compartir">
+  <Navbar />
+  <main id="contenido">
+    <section id="inicio" class="hero site-shell" aria-labelledby="hero-heading">
+      <div class="hero-copy">
+        <p class="eyebrow hero-enter">Repostería artesanal</p>
+        <h1 id="hero-heading" class="hero-enter">
+          Lo bonito de <span class="heading-italic">compartir.</span>
+        </h1>
+        <p class="hero-description hero-enter">
+          Un cumpleaños, una sobremesa o un día cualquiera. Siempre hay un buen
+          motivo para algo dulce.
+        </p>
+        <div class="hero-actions hero-enter">
+          <a href="/catalogo/" class="button">
+            Explorar catálogo{' '}
+            <IconArrowUpRight size={18} stroke={1.5} aria-hidden="true" />
+          </a>
+          <a href="#personalizados" class="text-link">
+            Imagina tu pastel{' '}
+            <IconArrowUpRight size={18} stroke={1.5} aria-hidden="true" />
+          </a>
+        </div>
+        <div class="hero-footnote hero-enter">
+          <span class="fine-line" aria-hidden="true"></span>
+          <p>
+            Hecho con cuidado.
+            <br />
+            Pensado para tus momentos.
+          </p>
+        </div>
+      </div>
+      <figure class="hero-visual hero-enter">
+        <div class="hero-image image-frame">
+          <Image
+            src={hero}
+            alt="Pastel artesanal de crema con frambuesas y flores, sobre lino y una base de cerámica junto a la ventana."
+            widths={[480, 800, 1120]}
+            sizes="(min-width: 768px) 48vw, 90vw"
+            width={1120}
+            height={1400}
+            fit="cover"
+            format="webp"
+            quality={85}
+            loading="eager"
+            fetchpriority="high"
+          />
+        </div>
+        <figcaption>
+          <span>Un pastel. Muchas formas de celebrar.</span>
+          <IconArrowUpRight size={18} stroke={1.5} aria-hidden="true" />
+        </figcaption>
+      </figure>
+    </section>
+    <nav class="category-nav site-shell" aria-label="Explorar por categoría">
+      {categories
+        .filter(
+          (category) => category.id !== 'temporada' || seasonalCampaign.active,
+        )
+        .map((category) => (
+          <a href={`/catalogo/#${category.id}`}>
+            {category.name}
+            <IconArrowUpRight size={18} stroke={1.5} aria-hidden="true" />
+          </a>
+        ))}
+    </nav>
+    <section
+      id="favoritos"
+      class="favorites section-space site-shell"
+      aria-labelledby="favorites-heading"
+    >
+      <div class="section-header" data-reveal>
+        <div>
+          <p class="eyebrow">Para empezar por algo rico</p>
+          <h2 id="favorites-heading">Nuestros favoritos</h2>
+        </div>
+        <a href="/catalogo/" class="text-link">
+          Ver todo el catálogo{' '}
+          <IconArrowUpRight size={18} stroke={1.5} aria-hidden="true" />
+        </a>
+      </div>
+      <div class="products-grid">
+        {favorites.map((product, index) => (
+          <ProductCard product={product} index={index} />
+        ))}
+      </div>
+      <p class="sample-note">
+        Selección de ejemplo. Fotografías ilustrativas; productos y
+        disponibilidad por confirmar.
+      </p>
+    </section>
+    <section id="historia" class="story" aria-labelledby="story-heading">
+      <div class="story-grid site-shell">
+        <figure class="story-visual image-frame" data-reveal>
+          <Image
+            src={hands}
+            alt="Manos de una persona cubriendo un pastel con crema, con una espátula sobre la mesa de trabajo."
+            widths={[480, 800, 1100]}
+            sizes="(min-width: 768px) 47vw, 90vw"
+            width={1100}
+            height={900}
+            fit="cover"
+            format="webp"
+            loading="lazy"
+          />
+        </figure>
+        <div class="story-copy" data-reveal>
+          <p class="eyebrow">Nuestra historia</p>
+          <h2 id="story-heading">
+            El cariño está
+            <br />
+            en los detalles.
+          </h2>
+          <p>
+            En las manos que preparan. En la última capa de crema. En elegir ese
+            sabor que sabes que le va a encantar.
+          </p>
+          <p>
+            Así imaginamos Corinne: repostería artesanal que encuentra su lugar
+            en los momentos compartidos.
+          </p>
+          <a href="#personalizados" class="text-link text-link-light">
+            Hagamos algo para ti{' '}
+            <IconArrowUpRight size={18} stroke={1.5} aria-hidden="true" />
+          </a>
+        </div>
+      </div>
+    </section>
+    <section
+      id="personalizados"
+      class="personalized section-space site-shell"
+      aria-labelledby="personalizados-heading"
+    >
+      <CakeConfigurator
+        client:visible
+        imageSrc={cakeImages[1]!.src}
+        imageSrcSet={cakeSrcSet}
+        imageAlt="Inspiración de un pastel personalizado con crema blanca, frambuesas y flores."
+      />
+    </section>
+    {seasonalCampaign.active && (
+      <section
+        class="seasonal site-shell"
+        aria-labelledby="seasonal-heading"
+        data-reveal
+      >
+        <div class="seasonal-grid">
+          <div class="seasonal-copy">
+            <p class="eyebrow">{seasonalCampaign.eyebrow}</p>
+            <h2 id="seasonal-heading">{seasonalCampaign.title}</h2>
+            <p class="section-description">{seasonalCampaign.description}</p>
+            <a href="/catalogo/#temporada" class="text-link">
+              Explorar la colección{' '}
+              <IconArrowUpRight size={18} stroke={1.5} aria-hidden="true" />
+            </a>
+          </div>
+          <div class="seasonal-image image-frame">
+            <Image
+              src={seasonalCampaign.image}
+              alt={seasonalCampaign.imageAlt}
+              widths={[480, 800, 1100]}
+              sizes="(min-width: 768px) 50vw, 90vw"
+              width={1100}
+              height={850}
+              fit="cover"
+              format="webp"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </section>
+    )}
+    <section
+      id="contacto"
+      class="closing section-space site-shell"
+      aria-labelledby="contact-heading"
+    >
+      <div class="closing-image image-frame" data-reveal>
+        <Image
+          src={brownies}
+          alt="Brownies de chocolate sobre un plato, listos para compartir en la sobremesa."
+          widths={[360, 600, 800]}
+          sizes="(min-width: 768px) 28vw, 70vw"
+          width={600}
+          height={700}
+          fit="cover"
+          format="webp"
+          loading="lazy"
+        />
+      </div>
+      <div class="closing-copy" data-reveal>
+        <p class="eyebrow">Para alguien especial. O para ti.</p>
+        <h2 id="contact-heading">
+          Tú pones el motivo.
+          <br />
+          <span class="heading-italic">Nosotros, lo dulce.</span>
+        </h2>
+        <p class="section-description">
+          Cuéntanos qué tienes en mente.
+          <br />
+          Nos encantará ser parte de ese momento.
+        </p>
+        {whatsappHref ? (
+          <a
+            href={whatsappHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="button"
+          >
+            Escríbenos por WhatsApp{' '}
+            <IconArrowUpRight size={18} stroke={1.5} aria-hidden="true" />
+          </a>
+        ) : (
+          <>
+            <button
+              type="button"
+              class="button"
+              disabled
+              aria-describedby="contact-pending"
+            >
+              Escríbenos por WhatsApp{' '}
+              <IconArrowUpRight size={18} stroke={1.5} aria-hidden="true" />
+            </button>
+            <p id="contact-pending" class="form-note">
+              Pronto compartiremos nuestro WhatsApp.
+            </p>
+          </>
+        )}
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>

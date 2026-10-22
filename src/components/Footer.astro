@@ -1,0 +1,59 @@
+---
+import { IconArrowUp } from '@tabler/icons-react';
+import { navigation, site } from '../data/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer site-shell">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="/" class="brand-link" aria-label="Corinne, inicio">
+        <img
+          src={site.logo}
+          width="64"
+          height="64"
+          alt="Corinne"
+          loading="lazy"
+        />
+      </a>
+      <p>
+        Repostería artesanal.
+        <br />
+        Pequeños detalles para compartir.
+      </p>
+    </div>
+    <nav aria-label="Navegación del pie de página" class="footer-links">
+      {navigation.map((link) => (
+        <a href={link.href}>{link.label}</a>
+      ))}
+      <a href="/catalogo/">Catálogo</a>
+    </nav>
+    {site.socialLinks.length > 0 && (
+      <nav aria-label="Redes sociales" class="footer-links">
+        {site.socialLinks.map((link) => (
+          <a href={link.href} target="_blank" rel="noopener noreferrer">
+            {link.label} ↗
+          </a>
+        ))}
+      </nav>
+    )}
+    <p class="footer-signoff">
+      Siempre hay algo
+      <br />
+      <span>que celebrar.</span>
+    </p>
+  </div>
+  <div class="footer-bottom">
+    <p>© {year} Corinne. Todos los derechos reservados.</p>
+    {site.legalLinks.length > 0 && (
+      <nav aria-label="Información legal">
+        {site.legalLinks.map((link) => (
+          <a href={link.href}>{link.label}</a>
+        ))}
+      </nav>
+    )}
+    <a href="#inicio" class="back-top">
+      Volver arriba <IconArrowUp size={16} stroke={1.5} aria-hidden="true" />
+    </a>
+  </div>
+</footer>

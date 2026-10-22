@@ -1,0 +1,76 @@
+---
+import { IconArrowUpRight } from '@tabler/icons-react';
+import type { GetStaticPaths } from 'astro';
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+import { visibleProducts } from '../../data/products';
+import type { Product } from '../../types/content';
+export const getStaticPaths = (() =>
+  visibleProducts.map((product) => ({
+    params: { slug: product.slug },
+    props: { product },
+  }))) satisfies GetStaticPaths;
+interface Props {
+  product: Product;
+}
+const { product } = Astro.props;
+---
+
+<BaseLayout
+  title={`${product.name} | Corinne`}
+  description={product.description}
+>
+  <Navbar />
+  <main id="contenido" class="product-page site-shell">
+    <a href="/catalogo/" class="text-link product-back">
+      ← Volver al catálogo
+    </a>
+    <div id="inicio" class="product-detail-grid">
+      <div class="product-detail-image image-frame">
+        <Image
+          src={product.image}
+          alt={product.imageAlt}
+          widths={[480, 800, 1100]}
+          sizes="(min-width: 768px) 45vw, 90vw"
+          width={900}
+          height={1100}
+          fit="cover"
+          format="webp"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </div>
+      <div class="product-detail-copy">
+        <p class="eyebrow">Repostería artesanal</p>
+        <h1>{product.name}</h1>
+        <p class="section-description">{product.detail}</p>
+        <p class="detail-price">
+          {product.price === null
+            ? 'Precio por confirmar'
+            : new Intl.NumberFormat('es-MX', {
+                style: 'currency',
+                currency: 'MXN',
+              }).format(product.price)}
+        </p>
+        <a
+          href={
+            product.category === 'pasteles' ? '/#personalizados' : '/#contacto'
+          }
+          class="button"
+        >
+          {product.category === 'pasteles'
+            ? 'Imagina tu pastel'
+            : 'Consultar contacto'}
+          <IconArrowUpRight size={18} stroke={1.5} aria-hidden="true" />
+        </a>
+        <p class="sample-note">
+          Producto de ejemplo. Imagen ilustrativa; ingredientes, presentación y
+          disponibilidad por confirmar.
+        </p>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
